@@ -13,6 +13,16 @@
     
     
     <item>
+      <title>Binding uploaded files to custom class in ASP.NET Core</title>
+      <link>/posts/20092019/</link>
+      <pubDate>Fri, 28 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/20092019/</guid>
+      <description>The problem I needed to take a file upload as input in an ASP.NET Core 3 (at the time of writing, version RC1) and pass that to a backend class/processor/api in the form of a custom class. For purposes of this post, let&amp;rsquo;s imagine that I have a backend API as follows.
+public class Processor() { public async Task&amp;lt;bool&amp;gt; ProcessFile(CustomFile file) { // processing magic // more magic return true; } }  And the CustomFile class</description>
+    </item>
+    
+    <item>
       <title>Hello world</title>
       <link>/posts/hello/</link>
       <pubDate>Fri, 28 Jun 2019 00:00:00 +0000</pubDate>

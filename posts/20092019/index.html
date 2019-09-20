@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Binding uploaded files to custom class in ASP.NET Core :: Blog | James Kulubya</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="The problem I needed to take a file upload as input in an ASP.NET Core 3 (at the time of writing, version RC1) and pass that to a backend class/processor/api in the form of a custom class. For purposes of this post, let&amp;rsquo;s imagine that I have a backend API as follows.
+public class Processor() { public async Task&amp;lt;bool&amp;gt; ProcessFile(CustomFile file) { // processing magic // more magic return true; } }  And the CustomFile class"/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="/posts/20092019/" />
+
+
+<link rel="stylesheet" href="/assets/style.css">
+
+  <link rel="stylesheet" href="/assets/blue.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144-precomposed.png">
+
+<link rel="shortcut icon" href="/img/favicon/blue.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Binding uploaded files to custom class in ASP.NET Core :: Blog | James Kulubya — " />
+<meta name="twitter:description" content="The problem I needed to take a file upload as input in an ASP.NET Core 3 (at the time of writing, version RC1) and pass that to a backend class/processor/api in the form of a custom class. For purposes of this post, let&amp;rsquo;s imagine that I have a backend API as follows.
+public class Processor() { public async Task&amp;lt;bool&amp;gt; ProcessFile(CustomFile file) { // processing magic // more magic return true; } }  And the CustomFile class" />
+<meta name="twitter:site" content="/" />
+<meta name="twitter:creator" content="JK" />
+<meta name="twitter:image" content="">
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Binding uploaded files to custom class in ASP.NET Core :: Blog | James Kulubya — ">
+<meta property="og:description" content="The problem I needed to take a file upload as input in an ASP.NET Core 3 (at the time of writing, version RC1) and pass that to a backend class/processor/api in the form of a custom class. For purposes of this post, let&amp;rsquo;s imagine that I have a backend API as follows.
+public class Processor() { public async Task&amp;lt;bool&amp;gt; ProcessFile(CustomFile file) { // processing magic // more magic return true; } }  And the CustomFile class" />
+<meta property="og:url" content="/posts/20092019/" />
+<meta property="og:site_name" content="Binding uploaded files to custom class in ASP.NET Core" />
+<meta property="og:image" content="">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2019-06-28 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container center">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Home
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="/posts/20092019/">Binding uploaded files to custom class in ASP.NET Core</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2019-06-28
+    </span>
+    
+    
+    <span class="post-author">::
+      JK
+    </span>
+    
+  </div>
+
+  
+
+  
+
+  <div class="post-content">
+    
+
+<h2 id="the-problem">The problem</h2>
+
+<p>I needed to take a file upload as input in an ASP.NET Core 3 (at the time of writing, version RC1) and pass that to a backend class/processor/api in the form of a custom class. For purposes of this post, let&rsquo;s imagine that I have a backend API as follows.</p>
+
+<pre><code>public class Processor() {
+    public async Task&lt;bool&gt; ProcessFile(CustomFile file)
+    {
+        // processing magic
+        // more magic
+        return true;
+    }
+}
+</code></pre>
+
+<p>And the CustomFile class</p>
+
+<pre><code>public class CustomFile {
+    public CustomFile(byte[] bytes, string mimeType) {
+        Bytes = bytes;
+        MimeType = mimeType
+    }
+
+    public byte[] Bytes { get; }
+    public string MimeType { get; }
+}
+</code></pre>
+
+<h2 id="solution-1-bind-to-iformfile-and-translate-to-custom-class-in-controller">Solution 1 - Bind to IFormFile and translate to custom class in controller</h2>
+
+<p>This is the out of the box scenario with ASP.NET core.
+Welcome to my new blog, where I&rsquo;ll be writing mostly about what I learn from programming, finance and life.</p>
+
+  </div>
+  
+  <div class="pagination">
+    <div class="pagination__title">
+      <span
+        class="pagination__title-h">Read other posts</span>
+      <hr />
+    </div>
+    <div class="pagination__buttons">
+      
+      
+      <span class="button next">
+        <a href="/posts/hello/">
+          <span class="button__text">Hello world</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
+      
+    </div>
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">(c) James Kulubya</div>
+    
+  </div>
+</footer>
+
+<script src="/assets/main.js"></script>
+<script src="/assets/prism.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
