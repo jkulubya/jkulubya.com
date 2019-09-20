@@ -7,7 +7,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <meta name="description" content="The problem I needed to take a file upload (IFormFile) as input in an ASP.NET Core 3 (at the time of writing, version RC1) and pass that to a backend class/processor/api in the form of a custom file class. For purposes of this post, let&amp;rsquo;s imagine that I have a backend API as follows.
-public class Processor() { public async Task&amp;lt;bool&amp;gt; ProcessFile(CustomFile file) { // processing magic // more magic return true; } }  And the CustomFile class"/>
+public class Processor { public async Task&amp;lt;bool&amp;gt; ProcessFile(CustomFile file) { // processing magic // more magic return true; } }  And the CustomFile class"/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
 <link rel="canonical" href="/2019/09/binding-uploaded-files-to-custom-class-in-asp.net-core/" />
@@ -31,7 +31,7 @@ public class Processor() { public async Task&amp;lt;bool&amp;gt; ProcessFile(Cus
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Binding uploaded files to custom class in ASP.NET Core :: Blog | James Kulubya — " />
 <meta name="twitter:description" content="The problem I needed to take a file upload (IFormFile) as input in an ASP.NET Core 3 (at the time of writing, version RC1) and pass that to a backend class/processor/api in the form of a custom file class. For purposes of this post, let&amp;rsquo;s imagine that I have a backend API as follows.
-public class Processor() { public async Task&amp;lt;bool&amp;gt; ProcessFile(CustomFile file) { // processing magic // more magic return true; } }  And the CustomFile class" />
+public class Processor { public async Task&amp;lt;bool&amp;gt; ProcessFile(CustomFile file) { // processing magic // more magic return true; } }  And the CustomFile class" />
 <meta name="twitter:site" content="/" />
 <meta name="twitter:creator" content="JK" />
 <meta name="twitter:image" content="">
@@ -41,7 +41,7 @@ public class Processor() { public async Task&amp;lt;bool&amp;gt; ProcessFile(Cus
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Binding uploaded files to custom class in ASP.NET Core :: Blog | James Kulubya — ">
 <meta property="og:description" content="The problem I needed to take a file upload (IFormFile) as input in an ASP.NET Core 3 (at the time of writing, version RC1) and pass that to a backend class/processor/api in the form of a custom file class. For purposes of this post, let&amp;rsquo;s imagine that I have a backend API as follows.
-public class Processor() { public async Task&amp;lt;bool&amp;gt; ProcessFile(CustomFile file) { // processing magic // more magic return true; } }  And the CustomFile class" />
+public class Processor { public async Task&amp;lt;bool&amp;gt; ProcessFile(CustomFile file) { // processing magic // more magic return true; } }  And the CustomFile class" />
 <meta property="og:url" content="/2019/09/binding-uploaded-files-to-custom-class-in-asp.net-core/" />
 <meta property="og:site_name" content="Binding uploaded files to custom class in ASP.NET Core" />
 <meta property="og:image" content="">
@@ -111,7 +111,7 @@ public class Processor() { public async Task&amp;lt;bool&amp;gt; ProcessFile(Cus
 
 <p>I needed to take a file upload (IFormFile) as input in an ASP.NET Core 3 (at the time of writing, version RC1) and pass that to a backend class/processor/api in the form of a custom file class. For purposes of this post, let&rsquo;s imagine that I have a backend API as follows.</p>
 
-<pre><code>public class Processor() {
+<pre><code>public class Processor {
     public async Task&lt;bool&gt; ProcessFile(CustomFile file)
     {
         // processing magic
