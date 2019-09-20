@@ -7,27 +7,27 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <copyright>(c) James Kulubya</copyright>
-    <lastBuildDate>Fri, 28 Jun 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 20 Sep 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Binding uploaded files to custom class in ASP.NET Core</title>
-      <link>/posts/20092019/</link>
-      <pubDate>Fri, 28 Jun 2019 00:00:00 +0000</pubDate>
+      <link>/2019/09/binding-uploaded-files-to-custom-class-in-asp.net-core/</link>
+      <pubDate>Fri, 20 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>/posts/20092019/</guid>
-      <description>The problem I needed to take a file upload as input in an ASP.NET Core 3 (at the time of writing, version RC1) and pass that to a backend class/processor/api in the form of a custom class. For purposes of this post, let&amp;rsquo;s imagine that I have a backend API as follows.
+      <guid>/2019/09/binding-uploaded-files-to-custom-class-in-asp.net-core/</guid>
+      <description>The problem I needed to take a file upload (IFormFile) as input in an ASP.NET Core 3 (at the time of writing, version RC1) and pass that to a backend class/processor/api in the form of a custom file class. For purposes of this post, let&amp;rsquo;s imagine that I have a backend API as follows.
 public class Processor() { public async Task&amp;lt;bool&amp;gt; ProcessFile(CustomFile file) { // processing magic // more magic return true; } }  And the CustomFile class</description>
     </item>
     
     <item>
       <title>Hello world</title>
-      <link>/posts/hello/</link>
+      <link>/2019/06/hello-world/</link>
       <pubDate>Fri, 28 Jun 2019 00:00:00 +0000</pubDate>
       
-      <guid>/posts/hello/</guid>
+      <guid>/2019/06/hello-world/</guid>
       <description>Welcome to my new blog, where I&amp;rsquo;ll be writing mostly about what I learn from programming, finance and life.</description>
     </item>
     

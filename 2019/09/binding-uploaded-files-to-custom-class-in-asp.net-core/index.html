@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Binding uploaded files to custom class in ASP.NET Core :: Blog | James Kulubya</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="The problem I needed to take a file upload (IFormFile) as input in an ASP.NET Core 3 (at the time of writing, version RC1) and pass that to a backend class/processor/api in the form of a custom file class. For purposes of this post, let&amp;rsquo;s imagine that I have a backend API as follows.
+public class Processor() { public async Task&amp;lt;bool&amp;gt; ProcessFile(CustomFile file) { // processing magic // more magic return true; } }  And the CustomFile class"/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="/2019/09/binding-uploaded-files-to-custom-class-in-asp.net-core/" />
+
+
+<link rel="stylesheet" href="/assets/style.css">
+
+  <link rel="stylesheet" href="/assets/blue.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144-precomposed.png">
+
+<link rel="shortcut icon" href="/img/favicon/blue.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Binding uploaded files to custom class in ASP.NET Core :: Blog | James Kulubya — " />
+<meta name="twitter:description" content="The problem I needed to take a file upload (IFormFile) as input in an ASP.NET Core 3 (at the time of writing, version RC1) and pass that to a backend class/processor/api in the form of a custom file class. For purposes of this post, let&amp;rsquo;s imagine that I have a backend API as follows.
+public class Processor() { public async Task&amp;lt;bool&amp;gt; ProcessFile(CustomFile file) { // processing magic // more magic return true; } }  And the CustomFile class" />
+<meta name="twitter:site" content="/" />
+<meta name="twitter:creator" content="JK" />
+<meta name="twitter:image" content="">
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Binding uploaded files to custom class in ASP.NET Core :: Blog | James Kulubya — ">
+<meta property="og:description" content="The problem I needed to take a file upload (IFormFile) as input in an ASP.NET Core 3 (at the time of writing, version RC1) and pass that to a backend class/processor/api in the form of a custom file class. For purposes of this post, let&amp;rsquo;s imagine that I have a backend API as follows.
+public class Processor() { public async Task&amp;lt;bool&amp;gt; ProcessFile(CustomFile file) { // processing magic // more magic return true; } }  And the CustomFile class" />
+<meta property="og:url" content="/2019/09/binding-uploaded-files-to-custom-class-in-asp.net-core/" />
+<meta property="og:site_name" content="Binding uploaded files to custom class in ASP.NET Core" />
+<meta property="og:image" content="">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2019-09-20 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container center">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Home
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="/2019/09/binding-uploaded-files-to-custom-class-in-asp.net-core/">Binding uploaded files to custom class in ASP.NET Core</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2019-09-20
+    </span>
+    
+    
+    <span class="post-author">::
+      JK
+    </span>
+    
+  </div>
+
+  
+
+  
+
+  <div class="post-content">
+    
+
+<h2 id="the-problem">The problem</h2>
+
+<p>I needed to take a file upload (IFormFile) as input in an ASP.NET Core 3 (at the time of writing, version RC1) and pass that to a backend class/processor/api in the form of a custom file class. For purposes of this post, let&rsquo;s imagine that I have a backend API as follows.</p>
+
+<pre><code>public class Processor() {
+    public async Task&lt;bool&gt; ProcessFile(CustomFile file)
+    {
+        // processing magic
+        // more magic
+        return true;
+    }
+}
+</code></pre>
+
+<p>And the CustomFile class</p>
+
+<pre><code>public class CustomFile {
+    public CustomFile(byte[] bytes, string mimeType) {
+        Bytes = bytes;
+        MimeType = mimeType
+    }
+
+    public byte[] Bytes { get; }
+    public string MimeType { get; }
+}
+</code></pre>
+
+<h2 id="solution-1-bind-to-iformfile-and-translate-to-custom-class-in-controller">Solution 1 - Bind to IFormFile and translate to custom class in controller</h2>
+
+<p>This is the out of the box scenario with ASP.NET core.</p>
+
+<p>Here&rsquo;s the view (using Razor pages)</p>
+
+<pre><code>@page
+@model ProcessModel
+@{
+    ViewData[&quot;Title&quot;] = &quot;Process item&quot;;
+}
+&lt;h1&gt;Process item&lt;/h1&gt;
+&lt;form class=&quot;ui large form&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;
+    &lt;div class=&quot;field&quot;&gt;
+        &lt;label asp-for=&quot;Document&quot;&gt;&lt;/label&gt;
+        &lt;div class=&quot;ui input&quot;&gt;
+            &lt;input asp-for=&quot;Document&quot;/&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+            &lt;span asp-validation-for=&quot;Document&quot; class=&quot;ui red text&quot;&gt;&lt;/span&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;input type=&quot;submit&quot; class=&quot;ui large fluid primary button&quot; value=&quot;Create item&quot;/&gt;
+&lt;/form&gt;
+</code></pre>
+
+<p>Here&rsquo;s your code-behind/controller</p>
+
+<pre><code>// usings
+namespace Web.Pages.Items
+{
+    public class ProcessModel : PageModel
+    {
+        private readonly Processor _processor;
+
+        public CreateModel(Processor processor)
+        {
+            _processor = processor
+        }
+
+        [BindProperty]
+        public IFormFile Document { get; set; }
+
+        public void OnGet()
+        {}
+
+        public async Task&lt;IActionResult&gt; OnPost()
+        {
+            if(!ModelState.IsValid) return Page();
+
+            using(var ms = new MemoryStream)
+            {
+                await InputModel.Document.CopyToAsync(ms);
+                var bytes = ms.ToByteArray();
+                var customFile = new CustomFile(bytes, InputModel.Document.ContentType);
+                var result = await _processor.ProcessFile(customFile);
+
+                if(result)
+                {
+                    return Page(&quot;ItemProcessed&quot;);
+                }
+                else {
+                    return Page(&quot;ItemProcessingFailed);
+                }
+            }
+            return Page();
+        }
+    }
+}
+</code></pre>
+
+<p>This approach gets the job done, and is a perfectly valid way of approaching the problem. However, I find this problematic for one major reason - this plumbing code will have to be repeated for every instance where we want to bind a file. Approach two addresses that.</p>
+
+<h2 id="solution-2">Solution 2</h2>
+
+<p>Here we use the custom model binder support in ASP.NET Core to do the plumbing only once, and reuse that everywhere that we need it.</p>
+
+<p>From the <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/advanced/custom-model-binding?view=aspnetcore-3.0">docs</a></p>
+
+<blockquote>
+<p>Model binding allows controller actions to work directly with model types (passed in as method arguments), rather than HTTP requests. Mapping between incoming request data and application models is handled by model binders. Developers can extend the built-in model binding functionality by implementing custom model binders (though typically, you don&rsquo;t need to write your own provider).</p>
+</blockquote>
+
+<h3 id="the-steps">The steps</h3>
+
+<ol>
+<li><h4 id="define-a-model-binder-that-implements-microsoft-aspnetcore-mvc-modelbinding-imodelbinding">Define a model binder that implements Microsoft.AspNetCore.Mvc.ModelBinding.IModelBinding</h4>
+
+<p>This takes the raw HTTP request, pulls out the data of interest, and converts it into the required form. In our case, it will look at the Form files and then convert them into our CustomFile class.</p>
+
+<pre><code>
+// usings
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+public class CustomFileModelBinder : IModelBinder
+{
+    public async Task BindModelAsync(ModelBindingContext bindingContext)
+    {
+        if (bindingContext == null) throw new ArgumentNullException(nameof(bindingContext));
+
+        // read the request for any files
+        var formFiles = bindingContext.ActionContext?.HttpContext?.Request?.Form?.Files;
+
+        if (formFiles == null || !formFiles.Any())
+        {
+            return; // this model binder is no longer interested in this request
+        }
+        if (formFiles.Count == 1)
+        {
+            // our original plumbing logic to change IFormFiles to CustomFile class
+            using (var memoryStream = new MemoryStream())
+            {
+                var ff = formFiles.First();
+                await ff.CopyToAsync(memoryStream);
+                var bytes = memoryStream.ToArray();
+                var model = new CustomFile(bytes, ff.ContentType);
+                bindingContext.Result = ModelBindingResult.Success(model); // signal that model binding was successful
+            }
+        }
+        else
+        {
+            // handle the case of multiple file uploads, i.e an IFormFileCollection
+            var list = new List&lt;DsdFile&gt;();
+            foreach (var formFile in formFiles)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await formFile.CopyToAsync(memoryStream);
+                    var bytes = memoryStream.ToArray();
+                    var item = GetDsdFile(bytes, formFile.ContentType);
+                    list.Add(item);
+                }
+            }
+            bindingContext.Result = ModelBindingResult.Success(list.AsEnumerable()); // signal that model binding was successful
+        }
+    }
+}
+</code></pre></li>
+
+<li><h4 id="define-a-model-binder-provider-that-implements-microsoft-aspnetcore-mvc-modelbinding-imodelbinderprovider">Define a model binder provider that implements Microsoft.AspNetCore.Mvc.ModelBinding.IModelBinderProvider</h4>
+
+<p>The IModelBinderProvider determines whether or not to use a specific model binder based on the types we declared that we would like to receive in our controllers and/or razor pages. In this case, we want a CustomFile class.</p>
+
+<pre><code>// usings
+using Microsoft.AspNetCore.Mvc.ModelBinding; 
+public class CustomFileModelBinderProvider : IModelBinderProvider
+{
+    public IModelBinder GetBinder(ModelBinderProviderContext context)
+    {
+        if (context == null)
+        {
+            throw new ArgumentNullException(nameof(context));
+        }
+
+        if (context.Metadata.ModelType == typeof(CustomFile)) // note the CustomFile
+        {
+            return new BinderTypeModelBinder(typeof(CustomFileModelBinder));
+        }
+
+        if (typeof(IEnumerable&lt;CustomFile&gt;).IsAssignableFrom(context.Metadata.ModelType)) // here we want an IEnumerable of Custom File
+        {
+            return new BinderTypeModelBinder(typeof(CustomFileModelBinder));
+        }
+
+        return null; // our provider can't help here
+    }
+}
+</code></pre></li>
+
+<li><h4 id="wire-up-your-custom-binders-into-asp-net-core-in-startup-cs">Wire up your custom binders into ASP.NET core in Startup.cs</h4>
+
+<p>We need to make the ASP.NET core pipeline aware of our new model binder. This we do in our Startup.cs file.</p>
+
+<pre><code>public class Startup
+{
+    public Startup(IConfiguration configurationd)
+    {
+        Configuration = configuration;
+    }
+
+    public IConfiguration Configuration { get; }
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        // ...
+        services.AddMvc(options =&gt;
+            {
+                options.ModelBinderProviders.Insert(0, new CustomFileModelBinderProvider());
+            });
+        // ...
+    }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        // ...
+    }
+}
+</code></pre></li>
+
+<li><h3 id="adjust-your-controllers-handlers-to-bind-directly-to-customfile">Adjust your controllers/handlers to bind directly to CustomFile</h3>
+
+<p>Now all the logic related to mapping from an IFormFile to CustomFile is gone, and all other related controllers would look similar.</p>
+
+<pre><code>// usings
+namespace Web.Pages.Items
+{
+    public class ProcessModel : PageModel
+    {
+        private readonly Processor _processor;
+
+        public CreateModel(Processor processor)
+        {
+            _processor = processor
+        }
+
+        [BindProperty]
+        public CustomFile Document { get; set; }
+
+        public void OnGet()
+        {}
+
+        public async Task&lt;IActionResult&gt; OnPost()
+        {
+            if(!ModelState.IsValid) return Page();
+
+            var result = await _processor.ProcessFile(customFile);
+
+            if(result)
+            {
+                return Page(&quot;ItemProcessed&quot;);
+            }
+            else {
+                return Page(&quot;ItemProcessingFailed);
+            }
+            return Page();
+        }
+    }
+}
+</code></pre></li>
+</ol>
+
+<h2 id="gotchas">Gotchas</h2>
+
+<ul>
+<li>The built-in tag helpers know to display a file picker input in the browser when attempting to bind to an IFormFile. Either remember to add a &ldquo;type=file&rdquo; to the necessary input tags, or extend the built-in tags to become aware of the CustomFile class.</li>
+<li>This solution doesn&rsquo;t work for nested CustomFile class. For example, it will not work for a custom file that is part of an IdentificationDocument class, that itself is part of a User class.</li>
+</ul>
+
+<h2 id="further-reading">Further reading</h2>
+
+<ul>
+<li><a href="https://stackoverflow.com/a/46124583">https://stackoverflow.com/a/46124583</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/advanced/custom-model-binding?view=aspnetcore-3.0">https://docs.microsoft.com/en-us/aspnet/core/mvc/advanced/custom-model-binding?view=aspnetcore-3.0</a></li>
+</ul>
+
+  </div>
+  
+  <div class="pagination">
+    <div class="pagination__title">
+      <span
+        class="pagination__title-h">Read other posts</span>
+      <hr />
+    </div>
+    <div class="pagination__buttons">
+      
+      
+      <span class="button next">
+        <a href="/2019/06/hello-world/">
+          <span class="button__text">Hello world</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
+      
+    </div>
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">(c) James Kulubya</div>
+    
+  </div>
+</footer>
+
+<script src="/assets/main.js"></script>
+<script src="/assets/prism.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
